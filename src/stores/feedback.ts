@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { subDays, parseISO, isAfter, isBefore, isEqual } from 'date-fns'
+import { subDays, parseISO, isAfter, isEqual } from 'date-fns'
 
 export interface FeedbackData {
   user_id: string;

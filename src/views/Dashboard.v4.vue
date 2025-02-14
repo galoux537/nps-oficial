@@ -10,7 +10,22 @@ ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, T
 
 const feedbackStore = useFeedbackStore()
 const visibleDatasets = ref(['geral'])
-const chartData = ref(null)
+interface ChartDataset {
+  id: string;
+  label: string;
+  data: number[];
+  borderColor: string;
+  backgroundColor: string;
+  tension: number;
+  hidden: boolean;
+}
+
+interface ChartData {
+  labels: string[];
+  datasets: ChartDataset[];
+}
+
+const chartData = ref<ChartData | null>(null);
 
 const useFilteredData = computed(() => 
   feedbackStore.filteredData.length > 0 ? feedbackStore.filteredData : feedbackStore.feedbackData

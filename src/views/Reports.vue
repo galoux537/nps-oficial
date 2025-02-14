@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useFeedbackStore } from '../stores/feedback'
 
 const feedbackStore = useFeedbackStore()
@@ -60,7 +60,7 @@ const toggleTable = () => {
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="item in tableData" :key="item.id">
+              <tr v-for="(item, index) in tableData" :key="index">
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ item.user_id }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm" :class="getNPSZone(item.score).textColor">{{ item.score }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm">

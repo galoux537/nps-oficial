@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import Papa from 'papaparse'
-import { useFeedbackStore, type FeedbackData } from '../stores/feedback'
+import { useFeedbackStore } from '../stores/feedback'
 import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
 
 const feedbackStore = useFeedbackStore()
 const fileInput = ref<HTMLInputElement | null>(null)
@@ -198,7 +197,7 @@ const handleFileChange = (event: Event) => {
 }
 
 const handleSearch = () => {
-  feedbackStore.filterFeedback(selectedPeriod.value, selectedRoles.value, selectedScores.value, startDate.value, endDate.value)
+  feedbackStore.filterFeedback(selectedPeriod.value, selectedRoles.value, selectedScores.value)
   showTable.value = true
 }
 </script>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import Papa from 'papaparse'
-import { useFeedbackStore, type FeedbackData } from '../stores/feedback'
+import { useFeedbackStore } from '../stores/feedback'
 
 const feedbackStore = useFeedbackStore()
 const fileInput = ref<HTMLInputElement | null>(null)
@@ -12,7 +12,6 @@ const uploadError = ref('')
 const showTable = ref(false)
 const isRolesOpen = ref(false)
 const isScoresOpen = ref(false)
-const searchPerformed = ref(false)
 
 const allRoles = ['agent', 'manager', 'supervisor']
 const allScores = Array.from({ length: 10 }, (_, i) => i + 1)
@@ -38,7 +37,7 @@ const periods = [
 ]
 
 // Computed properties para calcular contagens reais
-const roleCounts = computed(() => {
+const roleCounts = computed<Record<string, number>>(() => {
   const counts = {
     agent: 0,
     manager: 0,
@@ -74,19 +73,6 @@ const scoreCounts = computed(() => {
   return counts
 })
 
-const roles = computed(() => [
-  { value: 'agent', label: 'Agente', count: `${roleCounts.value.agent} respostas` },
-  { value: 'manager', label: 'Gestor', count: `${roleCounts.value.manager} respostas` },
-  { value: 'supervisor', label: 'Supervisor', count: `${roleCounts.value.supervisor} respostas` }
-])
-
-const scores = computed(() => 
-  Array.from({ length: 10 }, (_, i) => ({
-    value: i + 1,
-    label: (i + 1).toString(),
-    count: `${scoreCounts.value[i + 1]} respostas`
-  }))
-)
 
 const toggleRoles = () => {
   isRolesOpen.value = !isRolesOpen.value

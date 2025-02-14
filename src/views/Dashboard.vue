@@ -3,15 +3,15 @@ import { ref, computed, watch } from 'vue'
 import { useFeedbackStore } from '../stores/feedback'
 import { Line } from 'vue-chartjs'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js'
-import { format, parseISO, startOfMonth, endOfMonth } from 'date-fns'
+import { format, parseISO } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
+import { ChartOptions } from "chart.js";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
 const feedbackStore = useFeedbackStore()
 const visibleDatasets = ref(['agent', 'manager', 'supervisor'])
-const chartData = ref(null)
-const isTableExpanded = ref(true)
+const chartData = ref<{ labels: string[]; datasets: any } | null>(null);
 
 const useFilteredData = computed(() => 
   feedbackStore.filteredData.length > 0 ? feedbackStore.filteredData : feedbackStore.feedbackData
@@ -116,7 +116,7 @@ const updateChartData = () => {
   })
 
   // Criar datasets
-  const datasets = []
+  const datasets:any = []
   datasetConfigs.forEach(config => {
     if (visibleDatasets.value.includes(config.id)) {
       const data = last12Months.map(month => {
@@ -148,74 +148,41 @@ watch([useFilteredData, visibleDatasets], () => {
   chartData.value = updateChartData()
 }, { immediate: true })
 
-const chartOptions = {
+const chartOptions = ref<ChartOptions<"line">>({
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
     legend: {
-      position: 'bottom' as const,
-      align: 'center' as const,
+      position: "bottom",
+      align: "center",
       labels: {
         usePointStyle: true,
-        pointStyle: 'circle',
-        padding: 30,
-        boxWidth: 8,
-        boxHeight: 8,
+        pointStyle: "circle",
+        padding: 10,
+        boxWidth: 10,
+        boxHeight: 10,
         font: {
           size: 12
         }
       }
     },
     tooltip: {
-      mode: 'index',
-      intersect: false,
-      backgroundColor: 'white',
-      titleColor: '#374151',
-      bodyColor: '#374151',
-      borderColor: '#E5E7EB',
-      borderWidth: 1,
-      padding: 12,
-      displayColors: true,
-      callbacks: {
-        label(context: any) {
-          return `${context.dataset.label}: ${context.parsed.y}%`
-        }
-      }
+      enabled: true
     }
   },
   scales: {
-    y: {
-      beginAtZero: true,
-      max: 100,
-      ticks: {
-        callback(value: number) {
-          return value + '%'
-        }
-      },
-      grid: {
-        color: '#E5E7EB'
-      }
-    },
     x: {
-      grid: {
-        display: false
-      }
+      beginAtZero: true
+    },
+    y: {
+      beginAtZero: true
     }
   },
   interaction: {
-    mode: 'index',
-    intersect: false
+    mode: "nearest" // Valor válido
   }
-}
+});
 
-const hasActiveFilters = computed(() => {
-  return feedbackStore.filteredData.length > 0 && 
-         feedbackStore.feedbackData.length !== feedbackStore.filteredData.length
-})
-
-const toggleTable = () => {
-  isTableExpanded.value = !isTableExpanded.value
-}
 </script>
 
 <template>
